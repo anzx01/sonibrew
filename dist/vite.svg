@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="#007AFF" opacity="0.1"/>
+
+  <!-- Timer face -->
+  <circle cx="50" cy="50" r="40" stroke="#007AFF" stroke-width="3" fill="white"/>
+
+  <!-- Hour markers -->
+  <g stroke="#007AFF" stroke-width="2">
+    <line x1="50" y1="15" x2="50" y2="20"/>
+    <line x1="50" y1="80" x2="50" y2="85"/>
+    <line x1="15" y1="50" x2="20" y2="50"/>
+    <line x1="80" y1="50" x2="85" y2="50"/>
+  </g>
+
+  <!-- Clock hands (showing 10:10) -->
+  <g stroke="#007AFF" stroke-width="3" stroke-linecap="round">
+    <!-- Hour hand -->
+    <line x1="50" y1="50" x2="50" y2="30">
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0 50 50"
+        to="360 50 50"
+        dur="60s"
+        repeatCount="indefinite"/>
+    </line>
+    <!-- Minute hand -->
+    <line x1="50" y1="50" x2="65" y2="50">
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0 50 50"
+        to="360 50 50"
+        dur="5s"
+        repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- Center dot -->
+  <circle cx="50" cy="50" r="4" fill="#007AFF"/>
+
+  <!-- Beat indicators -->
+  <g fill="#007AFF" opacity="0.6">
+    <circle cx="50" cy="10" r="3">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="90" cy="50" r="3">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="1s" begin="0.25s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="50" cy="90" r="3">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="1s" begin="0.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="10" cy="50" r="3">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="1s" begin="0.75s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

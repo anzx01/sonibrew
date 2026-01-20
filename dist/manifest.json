@@ -1,0 +1,20 @@
+{
+  "name": "运动打点器 - Workout Beat Timer",
+  "short_name": "运动打点器",
+  "description": "A workout beat timer with customizable beat and voice counting",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007AFF",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "fitness", "sports"],
+  "lang": "zh-CN"
+}

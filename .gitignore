@@ -1,0 +1,39 @@
+## Visual Studio临时文件、编译结果等
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## 编译输出
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+[Bb]uild/
+bld/
+[Oo]ut/
+x64/
+x86/
+
+## NuGet
+packages/
+*.nupkg
+.nuget/
+NuGet.exe
+
+## 其他
+_ReSharper*/
+*.resharper
+*.cache
+*.log
+*.swp
+*.sass-cache
+
+## 项目文件
+*.csproj.user
+*.vbproj.user
+*.fsproj.user
+*.dbmdl
+node_modules
