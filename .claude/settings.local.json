@@ -18,7 +18,9 @@
       "Bash(pnpm run lint)",
       "Bash(pnpm run build:*)",
       "Bash(pnpm add:*)",
-      "Bash(Remove-Item -Recurse -Force .git)"
+      "Bash(Remove-Item -Recurse -Force .git)",
+      "Bash(npm install:*)",
+      "Bash(pnpm install:*)"
     ],
     "deny": [],
     "ask": []

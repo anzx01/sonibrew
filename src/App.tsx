@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import './i18n';
 import { Player } from './components/Player';
 import { Settings } from './components/Settings';
-import { Button } from './components/Button';
+import { Button } from './components/ui/button';
 import { useAudioPlayer } from './hooks/useAudioPlayer';
 import { useBackgroundMusic } from './hooks/useBackgroundMusic';
 import { AppSettings } from './types';
@@ -166,17 +166,15 @@ function App() {
         {/* Header - Minimal */}
         <header className="border-b border-[var(--separator-color)] bg-[var(--surface-color)]">
           <div className="px-4 py-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-xl font-bold text-[var(--text-primary)]">
-                  {t('appTitle')}
-                </h1>
-              </div>
+            <div className="flex justify-center items-center relative">
+              <h1 className="text-xl font-bold text-[var(--text-primary)]">
+                {t('appTitle')}
+              </h1>
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={() => handleLanguageChange(i18n.language === 'zh' ? 'en' : 'zh')}
-                className="!font-semibold"
+                className="!font-semibold absolute right-0"
               >
                 {i18n.language === 'zh' ? 'EN' : '中文'}
               </Button>

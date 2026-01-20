@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoMusicalNotes, IoVolumeHigh } from 'react-icons/io5';
-import { Slider } from './Slider';
-import { Toggle } from './Toggle';
+import { Slider } from './ui/slider';
+import { Switch } from './ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AppSettings, SoundType } from '../types';
 
 interface SettingsProps {
@@ -59,18 +60,30 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onChange }) => {
           }}>
             {t('backgroundMusic')}
           </label>
-          <Toggle
-            checked={settings.backgroundMusicEnabled}
-            onChange={(checked) => updateSetting('backgroundMusicEnabled', checked)}
-            label={settings.backgroundMusicEnabled ? t('on') : t('off')}
-          />
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={settings.backgroundMusicEnabled}
+              onCheckedChange={(checked) => updateSetting('backgroundMusicEnabled', checked)}
+            />
+            <span className="text-sm text-[var(--text-secondary)]">
+              {settings.backgroundMusicEnabled ? t('on') : t('off')}
+            </span>
+          </div>
         </div>
 
         <div className="py-2">
+          <label className="block text-sm font-medium mb-2" style={{
+            background: 'linear-gradient(90deg, #8B5CF6 0%, #EC4899 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            filter: 'drop-shadow(0 1px 2px rgba(139, 92, 246, 0.3))'
+          }}>
+            {t('backgroundMusicVolume')}
+          </label>
           <Slider
-            label={t('backgroundMusicVolume')}
-            value={settings.backgroundMusicVolume}
-            onChange={(value) => updateSetting('backgroundMusicVolume', value)}
+            value={[settings.backgroundMusicVolume]}
+            onValueChange={(values) => updateSetting('backgroundMusicVolume', values[0])}
             min={0}
             max={1}
             step={0.05}
@@ -115,27 +128,21 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onChange }) => {
           }}>
             {t('soundType')}
           </label>
-          <select
+          <Select
             value={settings.soundType}
-            onChange={(e) => updateSetting('soundType', e.target.value as SoundType)}
-            className="w-full px-4 py-2 rounded-lg border transition-all duration-200 focus:outline-none"
-            style={{
-              background: 'linear-gradient(135deg, #1F2937 0%, #111827 100%)',
-              borderColor: 'rgba(139, 92, 246, 0.3)',
-              color: '#FFFFFF',
-              boxShadow: `
-                0 2px 8px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.3)
-              `
-            }}
+            onValueChange={(value) => updateSetting('soundType', value as SoundType)}
           >
-            <option value="beep">{t('soundType_beep')}</option>
-            <option value="tick">{t('soundType_tick')}</option>
-            <option value="clap">{t('soundType_clap')}</option>
-            <option value="bell">{t('soundType_bell')}</option>
-            <option value="voice">{t('soundType_voice')}</option>
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="beep">{t('soundType_beep')}</SelectItem>
+              <SelectItem value="tick">{t('soundType_tick')}</SelectItem>
+              <SelectItem value="clap">{t('soundType_clap')}</SelectItem>
+              <SelectItem value="bell">{t('soundType_bell')}</SelectItem>
+              <SelectItem value="voice">{t('soundType_voice')}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </div>

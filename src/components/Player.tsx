@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoPlay, IoStop, IoRefresh, IoMusicalNotes } from 'react-icons/io5';
-import { Slider } from './Slider';
+import { IoPlay, IoStop, IoMusicalNotes } from 'react-icons/io5';
+import { Slider } from './ui/slider';
 import { MIN_BPM, MAX_BPM } from '../constants';
 import { logger } from '../utils/logger';
 
@@ -80,8 +80,9 @@ export const Player: React.FC<PlayerProps> = ({
           </p>
         </div>
         <Slider
-          value={bpm}
-          onChange={(newValue) => {
+          value={[bpm]}
+          onValueChange={(values) => {
+            const newValue = values[0];
             logger.log('Player Slider onChange 被调用，新值:', newValue);
             onBpmChange(newValue);
           }}
@@ -124,44 +125,8 @@ export const Player: React.FC<PlayerProps> = ({
         )}
       </div>
 
-      {/* Control Buttons - Colorful Pills with Icons and 3D depth */}
-      <div className="flex justify-center items-center gap-3 w-full">
-        {/* Left Button - Reset (Gradient with 3D) */}
-        <button
-          onClick={() => {
-            // Reset count or lap functionality
-            logger.log('Lap/Reset button clicked');
-          }}
-          className="flex-1 h-14 rounded-full flex items-center justify-center gap-2 transition-all duration-300 transform active:scale-95 relative overflow-hidden group"
-          style={{
-            background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A855F7 100%)',
-            boxShadow: `
-              0 8px 24px rgba(139, 92, 246, 0.5),
-              0 4px 12px rgba(139, 92, 246, 0.4),
-              0 0 0 1px rgba(255, 255, 255, 0.1),
-              inset 0 1px 0 rgba(255, 255, 255, 0.2),
-              inset 0 -2px 0 rgba(0, 0, 0, 0.3)
-            `,
-          }}
-        >
-          {/* Hover glow effect */}
-          <div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{
-              background: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%)',
-            }}
-          />
-          <IoRefresh className="text-2xl text-white relative z-10" style={{
-            filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))'
-          }} />
-          <span className="text-white text-base font-semibold relative z-10" style={{
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-          }}>
-            {t('reset')}
-          </span>
-        </button>
-
-        {/* Right Button - Start/Stop (Dynamic Gradient with 3D) */}
+      {/* Control Button - Start/Stop (Dynamic Gradient with 3D) */}
+      <div className="flex justify-center items-center w-full -mt-4">
         <button
           onClick={() => {
             if (isPlaying) {
@@ -170,7 +135,7 @@ export const Player: React.FC<PlayerProps> = ({
               onStart();
             }
           }}
-          className="flex-1 h-14 rounded-full flex items-center justify-center gap-2 transition-all duration-300 transform active:scale-95 relative overflow-hidden group"
+          className="w-48 h-14 rounded-full flex items-center justify-center gap-2 transition-all duration-300 transform active:scale-95 relative overflow-hidden group"
           style={{
             background: isPlaying
               ? 'linear-gradient(135deg, #EF4444 0%, #F97316 50%, #F59E0B 100%)'

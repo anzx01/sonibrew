@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card } from './Card';
-import { Button } from './Button';
+import { Card, CardContent } from './ui/card';
+import { Button } from './ui/button';
 import { ExerciseLog } from '../types';
 import { loadHistory, clearHistory, exportHistory } from '../utils/storage';
 
@@ -54,7 +54,7 @@ export const History: React.FC = () => {
       <div className="flex gap-2">
         <Button
           onClick={handleExportHistory}
-          variant="primary"
+          variant="default"
           className="flex-1"
           disabled={history.length === 0}
         >
@@ -62,7 +62,7 @@ export const History: React.FC = () => {
         </Button>
         <Button
           onClick={handleClearHistory}
-          variant="danger"
+          variant="destructive"
           className="flex-1"
           disabled={history.length === 0}
         >
@@ -73,40 +73,44 @@ export const History: React.FC = () => {
       {/* History List */}
       {history.length === 0 ? (
         <Card>
-          <p className="text-center text-[var(--text-secondary)]">
-            {t('noHistory')}
-          </p>
+          <CardContent className="pt-6">
+            <p className="text-center text-[var(--text-secondary)]">
+              {t('noHistory')}
+            </p>
+          </CardContent>
         </Card>
       ) : (
         <div className="flex flex-col gap-3">
           {history.map((log) => (
-            <Card key={log.id} className="flex flex-col gap-2">
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <p className="text-sm text-[var(--text-secondary)]">
-                    {t('startTime')}: {formatDateTime(log.startTime)}
-                  </p>
-                  {log.endTime && (
+            <Card key={log.id}>
+              <CardContent className="pt-6 flex flex-col gap-2">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
                     <p className="text-sm text-[var(--text-secondary)]">
-                      {t('endTime')}: {formatDateTime(log.endTime)}
+                      {t('startTime')}: {formatDateTime(log.startTime)}
                     </p>
+                    {log.endTime && (
+                      <p className="text-sm text-[var(--text-secondary)]">
+                        {t('endTime')}: {formatDateTime(log.endTime)}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-[var(--primary-color)]">
+                      {log.bpm} BPM
+                    </p>
+                    <p className="text-sm text-[var(--text-primary)]">
+                      {formatDuration(log.duration)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2 text-xs text-[var(--text-secondary)]">
+                  <span>{t('soundType')}_{log.soundType}</span>
+                  {log.enableCount && (
+                    <span>• Count 1-{log.countMax}</span>
                   )}
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold text-[var(--primary-color)]">
-                    {log.bpm} BPM
-                  </p>
-                  <p className="text-sm text-[var(--text-primary)]">
-                    {formatDuration(log.duration)}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-2 text-xs text-[var(--text-secondary)]">
-                <span>{t('soundType')}_{log.soundType}</span>
-                {log.enableCount && (
-                  <span>• Count 1-{log.countMax}</span>
-                )}
-              </div>
+              </CardContent>
             </Card>
           ))}
         </div>
