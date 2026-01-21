@@ -21,7 +21,11 @@
       "Bash(Remove-Item -Recurse -Force .git)",
       "Bash(npm install:*)",
       "Bash(pnpm install:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(powershell -Command \"echo $PROFILE\")",
+      "Bash(powershell -Command \"$PROFILE\")",
+      "Bash(powershell:*)",
+      "Bash('C:\\Users\\DELL\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1')"
     ],
     "deny": [],
     "ask": []
