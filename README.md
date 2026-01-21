@@ -1,45 +1,49 @@
-# 运动打点器 - Workout Beat Timer
+# SoniBrew - Workout Beat Timer
 
-A modern workout beat timer app built following iOS Human Interface Guidelines, with customizable beat patterns, voice counting, and background music support.
+A modern workout beat timer app with iPhone 16 Pro Max design, featuring real-time BPM adjustment, voice counting, and background music support.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-18-blue)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-5-purple)](https://vitejs.dev/)
+[![Vite](https://img.shields.io/badge/Vite-7-purple)](https://vitejs.dev/)
 
 ## ✨ Highlights
 
-- 🍎 **iOS 17+ Design** - Strictly follows Apple Human Interface Guidelines
-- 🎨 **Native Feel** - Authentic iOS frosted glass effects, shadows, and animations
-- 🌓 **Perfect Dark Mode** - iOS official color schemes
-- 📱 **Responsive Design** - Perfect for mobile and desktop
-- ⚡ **High Performance** - Built on Vite with instant HMR
+- 📱 **iPhone 16 Pro Max Design** - Complete device frame with Dynamic Island and Home Indicator
+- 🎨 **Colorful Gradient UI** - 3D depth effects, dynamic gradients, and smooth animations
+- 🌓 **Dark Theme** - Optimized visual experience for dark mode
+- ⚡ **Real-time Speed Adjustment** - Adjust BPM in real-time during playback without stopping
+- 🚀 **High Performance** - Built with Vite 7, using Web Audio API for precise timing
+
+## 🌟 Main Features
 
 ### Core Functionality
-- **Beat Player**: Adjustable metronome-style beat player (30-200 BPM)
+- **Real-time BPM Adjustment**: Adjust BPM (30-200) in real-time during playback without stopping
+- **Precise Timing**: Using Web Audio API and setTimeout for accurate beat scheduling
 - **Voice Counting**: Web Speech API integration for counting numbers (Chinese/English)
-- **Background Music**: Built-in background music with on/off and volume control
-- **Timer Mode**: Optional countdown timer (5-60 minutes) with auto-stop
-- **Multiple Sound Types**: Beep, Tick, Clap, Bell, and Voice
+- **Background Music**: 4 built-in background music tracks with loop playback and independent volume control
+- **Timer Mode**: Optional countdown timer (5-60 minutes) with auto-stop and notifications
+- **Multiple Sound Types**: Beep, Tick, Clap, Bell, and Voice (generated using Web Audio API)
 
 ### Settings & Customization
-- **BPM Control**: iOS style slider + presets (Slow: 45, Medium: 60, Fast: 90)
-- **Volume Controls**: Independent controls for beats, voice, and background music
+- **Real-time BPM Control**: Using Radix UI Slider, supports real-time speed adjustment during playback
+- **Volume Controls**: Independent controls for beats, voice, and background music (0-100%)
 - **Voice Options**: Choose language (Chinese/English) and voice style (Male/Female)
-- **Count Range**: Configurable count maximum (1-8, 1-10, 1-20)
-- **Sound Type**: 5 built-in sound types to choose from
+- **Count Range**: Configurable count maximum (8, 10, 20)
+- **Sound Type**: 5 built-in sound types (beep, tick, clap, bell, voice)
 
-### Data Storage
-- **Local Storage**: All settings automatically saved to LocalStorage
+### Data Storage & History
+- **Auto-save**: All settings automatically saved to LocalStorage
+- **Exercise Logs**: Automatically record each workout (duration, BPM, settings)
 - **No Server Required**: Completely local, privacy-focused
 
 ### User Experience
-- **iOS Design Language**: SF Pro typography, 8pt grid system, standard border radius & shadows
-- **Smooth Animations**: iOS standard easing curves and durations (150-500ms)
-- **Dark Mode**: Automatic theme switching with iOS official color schemes
-- **Multi-language**: Chinese and English with one-click toggle
-- **Progressive Web App**: Installable on mobile devices
-- **Browser Notifications**: Optional timer completion notifications
+- **iPhone 16 Pro Max Design**: Complete device frame with Dynamic Island, Home Indicator, and titanium bezel effect
+- **Colorful Gradients**: Multi-color gradient text and buttons with 3D depth effects and shadows
+- **Smooth Animations**: Button click scaling, count highlighting, and other interactive animations
+- **Dark Theme**: Optimized for dark mode with gradient backgrounds
+- **Multi-language**: Chinese and English with one-click toggle (auto-syncs voice language)
+- **Browser Notifications**: System notifications when timer completes
 
 ## 🚀 Quick Start
 
@@ -121,58 +125,73 @@ The app uses Web Audio API to generate built-in sounds. You can also download cu
 ## 🏗️ Project Structure
 
 ```
-workout-beat-timer/
+sonibrew/
 ├── src/
-│   ├── components/       # React UI components (iOS style)
-│   │   ├── Button.tsx    # iOS button component
-│   │   ├── Card.tsx      # iOS card component
-│   │   ├── Slider.tsx    # iOS slider component
-│   │   ├── Player.tsx    # Main player interface
-│   │   ├── Settings.tsx  # Settings panel
-│   │   ├── Presets.tsx   # Preset management
-│   │   └── History.tsx   # History records
-│   ├── hooks/           # Custom React hooks
-│   │   ├── useAudioPlayer.ts
-│   │   └── useBackgroundMusic.ts
-│   ├── utils/           # Utility functions
-│   │   ├── audioEngine.ts
-│   │   ├── voiceEngine.ts
-│   │   └── storage.ts
-│   ├── i18n/            # Internationalization
-│   │   ├── zh.ts        # Chinese translations
-│   │   └── en.ts        # English translations
-│   ├── types.ts         # TypeScript type definitions
-│   ├── constants.ts     # App constants
-│   ├── App.tsx          # Main app component
-│   ├── main.tsx         # Entry point
-│   └── index.css        # iOS 17+ Design System
-├── public/              # Static assets
-│   ├── manifest.json    # PWA config
-│   └── *.mp3           # Built-in background music
-├── .github/             # GitHub Actions workflows
+│   ├── components/           # React UI components
+│   │   ├── ui/              # Radix UI + Tailwind base components
+│   │   │   ├── button.tsx   # Button component
+│   │   │   ├── card.tsx     # Card component
+│   │   │   ├── slider.tsx   # Slider component (real-time speed adjustment)
+│   │   │   ├── switch.tsx   # Switch component
+│   │   │   ├── select.tsx   # Select component
+│   │   │   └── dialog.tsx   # Dialog component
+│   │   ├── Player.tsx       # Main player interface (colorful gradient design)
+│   │   ├── Settings.tsx     # Settings panel
+│   │   ├── Presets.tsx      # Preset management
+│   │   └── History.tsx      # History records
+│   ├── hooks/               # Custom React hooks
+│   │   ├── useAudioPlayer.ts    # Audio player logic (real-time speed adjustment)
+│   │   └── useBackgroundMusic.ts # Background music management
+│   ├── utils/               # Utility functions
+│   │   ├── audioEngine.ts   # Web Audio API audio engine
+│   │   ├── voiceEngine.ts   # Web Speech API voice engine
+│   │   ├── storage.ts       # LocalStorage management
+│   │   └── logger.ts        # Logging utility
+│   ├── i18n/                # Internationalization
+│   │   ├── index.ts         # i18next configuration
+│   │   ├── zh.ts            # Chinese translations
+│   │   └── en.ts            # English translations
+│   ├── lib/                 # Library utilities
+│   │   └── utils.ts         # Tailwind utility functions
+│   ├── types.ts             # TypeScript type definitions
+│   ├── constants.ts         # App constants
+│   ├── App.tsx              # Main app component (iPhone 16 Pro Max frame)
+│   ├── main.tsx             # Entry point
+│   └── index.css            # Tailwind CSS + custom styles
+├── public/                  # Static assets
+│   ├── manifest.json        # PWA config
+│   ├── vite.svg            # App icon
+│   └── *.mp3               # Built-in background music (4 tracks)
 ├── package.json
 ├── vite.config.js
 ├── tsconfig.json
-├── vercel.json         # Vercel deployment config
+├── tailwind.config.js
+├── postcss.config.js
 └── README.md
 ```
 
 ## 🛠️ Tech Stack
 
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite 5
-- **Audio**: Web Audio API + Howler.js
-- **Voice**: Web Speech API (SpeechSynthesis)
-- **i18n**: i18next + react-i18next
-- **Storage**: LocalStorage API
-- **Notifications**: Notification API
-- **Design System**: iOS 17+ HIG
-  - SF Pro typography system
-  - iOS 8pt grid system
-  - iOS official color system
-  - iOS frosted glass effects
-  - iOS standard border radius & shadows
-  - iOS easing curves & animations
+- **Framework**: React 18 + TypeScript 5
+- **Build Tool**: Vite 7
+- **UI Components**: Radix UI (Dialog, Select, Slider, Switch, Slot)
+- **Styling**: Tailwind CSS 3.4 + tailwindcss-animate
+- **Utilities**:
+  - class-variance-authority - Component variant management
+  - clsx + tailwind-merge - Class name merging
+  - lucide-react + react-icons - Icon libraries
+- **Audio**:
+  - Web Audio API - Beat sound generation and precise timing
+  - Howler.js 2.2 - Background music playback
+- **Voice**: Web Speech API (SpeechSynthesis) - Voice counting
+- **i18n**: i18next + react-i18next + i18next-browser-languagedetector
+- **Storage**: LocalStorage API - Settings and history
+- **Notifications**: Notification API - Timer completion notifications
+- **Design Style**: iPhone 16 Pro Max Design
+  - Dynamic Island and Home Indicator
+  - Titanium bezel effect
+  - Colorful gradients and 3D depth effects
+  - Smooth interactive animations
 
 ## 🌐 Browser Compatibility
 
@@ -185,35 +204,45 @@ workout-beat-timer/
 
 ## 📝 Features Breakdown
 
+### Real-time Speed Adjustment Technology
+- **Playback Speed Adjustment**: Uses ref to store current BPM, enabling real-time speed adjustment during playback
+- **Smart Rescheduling**: Immediately clears current timeout and reschedules next beat when BPM changes
+- **Voice Real-time Speed**: In voice beat mode, immediately cancels current speech and applies new rate when BPM changes
+- **Precise Timing**: Uses `setTimeout` recursive scheduling, dynamically calculates delay based on BPM
+
 ### Audio Engine
-- Real-time beat generation using Web Audio API oscillators
-- 5 built-in sound types (Beep, Tick, Clap, Bell, Voice)
-- Precise timing with <100ms latency
+- **Web Audio API**: Uses oscillators to generate beat sounds in real-time
+- **5 Sound Types**: beep (sine wave), tick (square wave), clap (white noise), bell (triangle wave), voice (human voice)
+- **Precise Timing**: <100ms latency, suitable for high-intensity workouts
+- **Volume Control**: Independent beat volume control (0-100%)
 
 ### Voice Counting
-- Web Speech API SpeechSynthesis
-- Chinese and English number pronunciation
-- Voice style selection (Male/Female)
-- Rate adjustment synchronized to BPM
+- **Web Speech API**: Uses SpeechSynthesis for voice synthesis
+- **Chinese/English Support**: Automatically selects system voice (Chinese/English)
+- **Voice Style**: Male/Female voice selection
+- **Rate Synchronization**: Voice rate automatically adjusts based on BPM (60 BPM = 1.0x, 120 BPM = 1.5x)
+- **Smart Counting**: Supports 8, 10, 20 count loops
 
 ### Background Music
-- Built-in background music files
-- Loop-based playback
-- Independent volume control
-- Automatic layering with beats/voice
+- **Howler.js Management**: Uses Howler.js for audio file playback
+- **4 Built-in Tracks**: xm2544.mp3, xm3242.mp3, xm3251.mp3, y1891.mp3
+- **Loop Playback**: Automatic looping with seamless transitions
+- **Independent Volume**: Background music volume control independent of beats and voice
+- **Auto-mixing**: Automatically mixes with beats and voice
 
-### iOS Design System
-- **Colors**: iOS 17+ official colors (blue, green, red, etc.)
-- **Typography**: SF Pro Display/Text font hierarchy
-- **Spacing**: 8pt grid system (4, 8, 12, 16, 20, 24...)
-- **Border Radius**: Standard iOS corner radius (6, 8, 12, 16, 20, 24px)
-- **Shadows**: Precise dual-layer shadow system
-- **Frosted Glass**: Authentic iOS blur effects (72%/85% opacity)
-- **Animations**: iOS standard easing curves & durations (150-500ms)
+### iPhone 16 Pro Max Design
+- **Device Frame**: Complete iPhone 16 Pro Max appearance (430x932px)
+- **Dynamic Island**: Top dynamic island design (126x37px, 19px border radius)
+- **Home Indicator**: Bottom home indicator (134x5px)
+- **Titanium Bezel**: Gradient bezel effect simulating titanium texture
+- **Colorful Gradients**: Multi-color gradient text and buttons (blue-purple-pink-orange-green)
+- **3D Depth**: Multi-layer shadows and inset shadows creating 3D depth
+- **Smooth Animations**: Button click scaling (scale-95), count highlighting, and other interactive animations
 
 ### Data Persistence
-- Settings auto-save to LocalStorage
-- No server required, completely local
+- **Auto-save**: Settings automatically saved to LocalStorage when changed
+- **Exercise Logs**: Automatically records each workout (duration, BPM, settings)
+- **Storage Keys**: Uses namespace prefix (workoutbeat_*) to avoid conflicts
 
 ## 🔒 Privacy & Security
 
@@ -224,51 +253,68 @@ workout-beat-timer/
 
 ## 🎨 Customization
 
-### iOS Design System
-The app uses a complete iOS 17+ design system. All style variables are defined in `src/index.css`:
+### Modify Design Style
+The app uses Tailwind CSS and inline styles. Main styles are in the following files:
 
+**`src/components/Player.tsx`** - Player interface gradients and 3D effects
+```tsx
+// Modify gradient colors
+background: 'linear-gradient(135deg, #60A5FA 0%, #A78BFA 50%, #EC4899 100%)'
+
+// Modify shadows
+boxShadow: '0 8px 32px rgba(16, 185, 129, 0.6)'
+```
+
+**`src/App.tsx`** - iPhone frame and background
+```tsx
+// Modify background gradient
+background: 'radial-gradient(circle at 50% 0%, #2C2C2E 0%, #1C1C1E 50%, #000000 100%)'
+
+// Modify bezel gradient (titanium effect)
+background: 'linear-gradient(135deg, #4A4A4C 0%, #2C2C2E 25%, #1C1C1E 50%, #2C2C2E 75%, #4A4A4C 100%)'
+```
+
+**`src/index.css`** - Tailwind configuration and global styles
 ```css
+/* Modify CSS variables */
 :root {
-  /* iOS Official Colors */
-  --ios-blue: #007AFF;
-  --ios-green: #34C759;
-  --ios-red: #FF3B30;
-
-  /* iOS Typography Scale */
-  .text-title1 { font-size: 28px; font-weight: 700; }
-  .text-headline { font-size: 17px; font-weight: 600; }
-  .text-body { font-size: 17px; font-weight: 400; }
-
-  /* iOS 8pt Grid System */
-  --spacing-1: 4px;
-  --spacing-2: 8px;
-  --spacing-4: 16px;
-  --spacing-6: 24px;
-
-  /* iOS Border Radius */
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-
-  /* iOS Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --background-color: #000000;
+  --surface-color: #1C1C1E;
+  --text-primary: #FFFFFF;
 }
 ```
 
 ### Adding New Sound Types
-Edit `src/utils/audioEngine.ts` and add a new case in the `playBeatSound` function.
+Edit the `playBeatSound` function in `src/utils/audioEngine.ts`:
+
+```typescript
+case 'custom':
+  oscillator.type = 'sawtooth'; // Sawtooth wave
+  oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 pitch
+  gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+  break;
+```
 
 ### Adding New Languages
-1. Create translation file in `src/i18n/`
-2. Add to `src/i18n/index.ts`
-3. Update language selector in App.tsx
+1. Create translation file in `src/i18n/` (e.g., `ja.ts`)
+2. Add to resources in `src/i18n/index.ts`
+3. Update language toggle button in `src/App.tsx`
+4. Add language option in `src/components/Settings.tsx`
 
-### Customizing Theme
-All iOS design variables are in `src/index.css`, adjust as needed:
-- Modify `--primary-color` to change theme color
-- Modify `--radius-*` to adjust corner radius
-- Modify `--shadow-*` to adjust shadow intensity
-- Modify `--transition-*` to adjust animation duration
+### Modifying BPM Range
+Edit `src/constants.ts`:
+
+```typescript
+export const MIN_BPM = 20;  // Minimum BPM
+export const MAX_BPM = 300; // Maximum BPM
+export const DEFAULT_BPM = 60; // Default BPM
+```
+
+### Adding Background Music
+1. Place MP3 file in `public/` directory
+2. Add music option in `src/components/Settings.tsx`
+3. Files will be automatically processed by Vite and accessible via `/filename.mp3`
 
 ## 🐛 Troubleshooting
 
@@ -301,12 +347,26 @@ For issues or questions, please open an issue on GitHub.
 
 ## 🙏 Acknowledgments
 
-- Design inspired by [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
+- Design inspired by [Apple iPhone 16 Pro Max](https://www.apple.com/iphone-16-pro/)
 - Built with [React](https://reactjs.org/)
 - Powered by [Vite](https://vitejs.dev/)
+- UI components based on [Radix UI](https://www.radix-ui.com/)
+- Styling with [Tailwind CSS](https://tailwindcss.com/)
 - Audio managed with [Howler.js](https://howlerjs.com/)
 - Internationalization by [i18next](https://www.i18next.com/)
+- Icons from [Lucide React](https://lucide.dev/) and [React Icons](https://react-icons.github.io/react-icons/)
+
+## ⚡ Performance Features
+
+- **Fast Startup**: Vite 7 provides lightning-fast dev server startup (<1s)
+- **Instant HMR**: Hot module replacement with <100ms latency
+- **Small Build Size**: Production build optimized with code splitting
+- **Precise Timing**: Web Audio API provides <100ms beat latency
+- **Real-time Response**: BPM adjustments take effect immediately without restarting playback
+- **Smooth Animations**: 60fps CSS animations and transitions
+- **Memory Optimization**: Uses ref to avoid unnecessary re-renders
+- **Smart Scheduling**: Uses setTimeout recursive scheduling to avoid setInterval cumulative errors
 
 ---
 
-**🍎 Built following iOS Human Interface Guidelines**
+**📱 Built with iPhone 16 Pro Max Design Style**
