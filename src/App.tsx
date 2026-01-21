@@ -68,7 +68,7 @@ function App() {
       logger.log('停止背景音乐...');
       bgMusic.stop();
     }
-  }, [settings.backgroundMusicEnabled]);
+  }, [settings.backgroundMusicEnabled, bgMusic]);
 
   // Handle start
   const handleStart = () => {

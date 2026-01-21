@@ -18,6 +18,7 @@ let audioContext: AudioContext | null = null;
 const getAudioContext = (): AudioContext => {
   if (!audioContext || audioContext.state === 'closed') {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       logger.info('AudioContext created/recreated');
     } catch (error) {

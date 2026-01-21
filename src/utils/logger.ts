@@ -9,7 +9,7 @@ export const logger = {
   /**
    * Log debug information (only in development)
    */
-  log: (...args: any[]): void => {
+  log: (...args: unknown[]): void => {
     if (isDevelopment) {
       console.log(...args);
     }
@@ -18,21 +18,21 @@ export const logger = {
   /**
    * Log warnings (always enabled)
    */
-  warn: (...args: any[]): void => {
+  warn: (...args: unknown[]): void => {
     console.warn(...args);
   },
 
   /**
    * Log errors (always enabled)
    */
-  error: (...args: any[]): void => {
+  error: (...args: unknown[]): void => {
     console.error(...args);
   },
 
   /**
    * Log info messages (only in development)
    */
-  info: (...args: any[]): void => {
+  info: (...args: unknown[]): void => {
     if (isDevelopment) {
       console.info(...args);
     }

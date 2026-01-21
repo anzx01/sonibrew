@@ -36,8 +36,8 @@ const safeSetItem = (key: string, data: string): boolean => {
   try {
     localStorage.setItem(key, data);
     return true;
-  } catch (e: any) {
-    if (e.name === 'QuotaExceededError') {
+  } catch (e: unknown) {
+    if (e instanceof Error && e.name === 'QuotaExceededError') {
       logger.error('localStorage quota exceeded');
       // Try to free up space by removing old history
       try {
@@ -61,6 +61,7 @@ const safeSetItem = (key: string, data: string): boolean => {
  */
 export const saveSettings = (settings: AppSettings): void => {
   // Don't save audio files to localStorage (they're too large)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { backgroundMusicFile, customSoundData, ...settingsToSave } = settings;
   const success = safeSetItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settingsToSave));
   if (!success) {

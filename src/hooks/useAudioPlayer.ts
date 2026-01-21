@@ -153,7 +153,7 @@ export const useAudioPlayer = ({ settings, onTimerComplete }: UseAudioPlayerOpti
     });
 
     return shouldContinue;
-  }, [settings.timerMode, settings.timerDuration, onTimerComplete, playBeat, settings.enableCount, settings.countMax, settings.voiceLanguage, settings.voiceGender, settings.voiceVolume]);
+  }, [settings.timerMode, onTimerComplete, playBeat, settings.enableCount, settings.countMax, settings.voiceLanguage, settings.voiceGender, settings.voiceVolume]);
 
   // Schedule the next beat
   const scheduleNextBeat = useCallback(() => {
@@ -239,12 +239,12 @@ export const useAudioPlayer = ({ settings, onTimerComplete }: UseAudioPlayerOpti
 
     // Start the scheduling loop
     scheduleNextBeat();
-  }, [playerState.isPlaying, playBeat, scheduleNextBeat]);
+  }, [playerState.isPlaying, playerState.currentBPM, playBeat, scheduleNextBeat]);
 
   // Pause playing
   const pause = useCallback(() => {
-    logger.log('pause() 被调用，当前state:', playerState);
-    if (!playerState.isPlaying || playerState.isPaused) {
+    logger.log('pause() 被调用');
+    if (!isPlayingRef.current || playerState.isPaused) {
       logger.log('pause() 被忽略，不是在播放状态');
       return;
     }
@@ -265,7 +265,7 @@ export const useAudioPlayer = ({ settings, onTimerComplete }: UseAudioPlayerOpti
       isPlaying: false,
       isPaused: true,
     }));
-  }, [playerState.isPlaying, playerState.isPaused]);
+  }, [playerState.isPaused]);
 
   // Stop playing and reset
   const stop = useCallback(() => {
