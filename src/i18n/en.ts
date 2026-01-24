@@ -60,7 +60,6 @@ export const en = {
     voiceGender_female: 'Female',
 
     // Background music
-    enableBackgroundMusic: 'Enable Background Music',
     backgroundMusicVolume: 'Background Music Volume',
     uploadMusic: 'Upload Music',
     noMusicSelected: 'No music selected',

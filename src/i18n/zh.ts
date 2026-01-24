@@ -60,7 +60,6 @@ export const zh = {
     voiceGender_female: '女声',
 
     // Background music
-    enableBackgroundMusic: '启用背景音乐',
     backgroundMusicVolume: '背景音乐音量',
     uploadMusic: '上传音乐',
     noMusicSelected: '未选择音乐',
