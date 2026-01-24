@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, Volume2, Mic, Music2 } from 'lucide-react';
+import { Play, Pause, Volume2 } from 'lucide-react';
 import { Slider } from './ui/slider';
 import { MIN_BPM, MAX_BPM } from '../constants';
 import { AppSettings, SoundType } from '../types';
