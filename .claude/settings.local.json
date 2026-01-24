@@ -26,7 +26,10 @@
       "Bash(powershell -Command \"$PROFILE\")",
       "Bash(powershell:*)",
       "Bash('C:\\Users\\DELL\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1')",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(sort:*)",
+      "Read(//g/myaist/sonibrew/**)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []
