@@ -41,6 +41,12 @@ export const useAudioPlayer = ({ settings, onTimerComplete }: UseAudioPlayerOpti
     try {
       await resumeAudioContext();
 
+      // If voice counting is enabled, only play voice count (no beat sound)
+      if (settings.enableCount && isSpeechSupported()) {
+        // Voice count will be played separately in playAndScheduleNext
+        return;
+      }
+
       // Play beat sound
       try {
         if (settings.soundType === 'voice') {
@@ -77,7 +83,7 @@ export const useAudioPlayer = ({ settings, onTimerComplete }: UseAudioPlayerOpti
     } catch (error) {
       logger.error('Error in beat playback:', error);
     }
-  }, [settings.soundType, settings.voiceLanguage, settings.voiceGender, settings.beatVolume, settings.customSoundData]);
+  }, [settings.soundType, settings.voiceLanguage, settings.voiceGender, settings.beatVolume, settings.customSoundData, settings.enableCount]);
 
   // Helper function to play a beat and update state
   // Returns true if playback should continue, false if it should stop
@@ -113,13 +119,16 @@ export const useAudioPlayer = ({ settings, onTimerComplete }: UseAudioPlayerOpti
         // If voice counting is enabled, speak the number
         if (settings.enableCount && isSpeechSupported() && newCount <= settings.countMax) {
           const rate = calculateSpeechRate(prev.currentBPM);
+          logger.log('播放人声计数:', newCount, '语言:', settings.voiceLanguage, '音量:', settings.voiceVolume);
           speakNumber(
             newCount,
             settings.voiceLanguage,
             settings.voiceGender,
             settings.voiceVolume,
             rate
-          ).catch(() => {});
+          ).catch((error) => {
+            logger.error('人声计数播放失败:', error);
+          });
         }
 
         return {
@@ -136,13 +145,16 @@ export const useAudioPlayer = ({ settings, onTimerComplete }: UseAudioPlayerOpti
       // If voice counting is enabled, speak the number
       if (settings.enableCount && isSpeechSupported() && newCount <= settings.countMax) {
         const rate = calculateSpeechRate(prev.currentBPM);
+        logger.log('播放人声计数:', newCount, '语言:', settings.voiceLanguage, '音量:', settings.voiceVolume);
         speakNumber(
           newCount,
           settings.voiceLanguage,
           settings.voiceGender,
           settings.voiceVolume,
           rate
-        ).catch(() => {});
+        ).catch((error) => {
+          logger.error('人声计数播放失败:', error);
+        });
       }
 
       return {

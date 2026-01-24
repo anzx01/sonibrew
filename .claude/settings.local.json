@@ -25,7 +25,8 @@
       "Bash(powershell -Command \"echo $PROFILE\")",
       "Bash(powershell -Command \"$PROFILE\")",
       "Bash(powershell:*)",
-      "Bash('C:\\Users\\DELL\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1')"
+      "Bash('C:\\Users\\DELL\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1')",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

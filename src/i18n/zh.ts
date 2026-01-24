@@ -21,8 +21,16 @@ export const zh = {
 
     // Settings
     settings: '设置',
+    player: '播放器',
+    general: '通用',
+    notifications: '通知',
+    soundEffects: '音效',
+    audio: '音频',
+    about: '关于',
+    version: '版本',
     soundSettings: '声音设置',
     backgroundMusic: '背景音乐',
+    enableBackgroundMusic: '启用背景音乐',
     presets: '预设',
     history: '历史记录',
     language: '语言',

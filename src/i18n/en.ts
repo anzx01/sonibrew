@@ -21,8 +21,16 @@ export const en = {
 
     // Settings
     settings: 'Settings',
+    player: 'Player',
+    general: 'General',
+    notifications: 'Notifications',
+    soundEffects: 'Sound Effects',
+    audio: 'Audio',
+    about: 'About',
+    version: 'Version',
     soundSettings: 'Sound Settings',
     backgroundMusic: 'Background Music',
+    enableBackgroundMusic: 'Enable Background Music',
     presets: 'Presets',
     history: 'History',
     language: 'Language',

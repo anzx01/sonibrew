@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoPlay, IoStop, IoMusicalNotes } from 'react-icons/io5';
+import { Play, Pause, Volume2, Mic, Music2 } from 'lucide-react';
 import { Slider } from './ui/slider';
 import { MIN_BPM, MAX_BPM } from '../constants';
-import { logger } from '../utils/logger';
+import { AppSettings, SoundType } from '../types';
 
 interface PlayerProps {
   bpm: number;
@@ -16,6 +16,8 @@ interface PlayerProps {
   onStart: () => void;
   onStop: () => void;
   onBpmChange: (bpm: number) => void;
+  settings: AppSettings;
+  onSettingsChange: (settings: AppSettings) => void;
 }
 
 export const Player: React.FC<PlayerProps> = ({
@@ -23,223 +25,235 @@ export const Player: React.FC<PlayerProps> = ({
   isPlaying,
   currentCount,
   elapsedTime,
-  remainingTime,
-  enableCount,
-  countMax,
   onStart,
   onStop,
   onBpmChange,
+  settings,
+  onSettingsChange,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [totalBeats, setTotalBeats] = useState(0);
 
-  logger.log('Player组件渲染，bpm:', bpm, 'isPlaying:', isPlaying);
+  // Update total beats when count changes
+  React.useEffect(() => {
+    if (isPlaying) {
+      setTotalBeats(currentCount);
+    }
+  }, [currentCount, isPlaying]);
+
+  // Reset total beats when stopped
+  React.useEffect(() => {
+    if (!isPlaying) {
+      setTotalBeats(0);
+    }
+  }, [isPlaying]);
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const updateSetting = <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
+    onSettingsChange({ ...settings, [key]: value });
+  };
+
+  const handleLanguageChange = (lang: string) => {
+    i18n.changeLanguage(lang);
+    localStorage.setItem('i18nextLng', lang);
+    // Sync voice language with UI language
+    updateSetting('voiceLanguage', lang as 'zh' | 'en');
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8 py-6">
-      {/* BPM Section - Colorful with 3D depth */}
-      <div className="w-full p-4 rounded-2xl" style={{
-        background: 'linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
-        boxShadow: `
-          0 4px 6px rgba(0, 0, 0, 0.4),
-          0 8px 16px rgba(0, 0, 0, 0.3),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1),
-          inset 0 -1px 0 rgba(0, 0, 0, 0.5)
-        `,
-        border: '1px solid rgba(255, 255, 255, 0.05)'
-      }}>
-        <div className="text-center mb-3">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <IoMusicalNotes className="text-2xl" style={{
-              color: '#A78BFA',
-              filter: 'drop-shadow(0 2px 4px rgba(167, 139, 250, 0.5))'
-            }} />
-            <p className="text-xs uppercase tracking-wider font-semibold" style={{
-              background: 'linear-gradient(135deg, #A78BFA 0%, #EC4899 50%, #F59E0B 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 2px 4px rgba(167, 139, 250, 0.3))'
-            }}>
-              {t('currentBpm')}
-            </p>
-          </div>
-          <p className="text-5xl font-bold" style={{
-            background: 'linear-gradient(135deg, #60A5FA 0%, #A78BFA 50%, #EC4899 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            filter: 'drop-shadow(0 4px 8px rgba(139, 92, 246, 0.4))'
-          }}>
-            {bpm || 0}
-          </p>
+    <div className="h-full px-5 pt-3 pb-5 flex flex-col gap-5">
+      {/* Header with Language Switcher */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-[24px] font-bold text-[#18181B] leading-tight" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+          SoniBrew
+        </h1>
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleLanguageChange('zh')}
+            className={`px-2.5 py-1 rounded-full text-[12px] font-semibold transition-colors ${
+              i18n.language === 'zh'
+                ? 'bg-[#8B5CF6] text-white'
+                : 'bg-[#F4F4F5] text-[#71717A]'
+            }`}
+          >
+            中文
+          </button>
+          <button
+            onClick={() => handleLanguageChange('en')}
+            className={`px-2.5 py-1 rounded-full text-[12px] font-semibold transition-colors ${
+              i18n.language === 'en'
+                ? 'bg-[#8B5CF6] text-white'
+                : 'bg-[#F4F4F5] text-[#71717A]'
+            }`}
+          >
+            EN
+          </button>
         </div>
-        <Slider
-          value={[bpm]}
-          onValueChange={(values) => {
-            const newValue = values[0];
-            logger.log('Player Slider onChange 被调用，新值:', newValue);
-            onBpmChange(newValue);
-          }}
-          min={MIN_BPM}
-          max={MAX_BPM}
-          step={1}
-        />
       </div>
 
-      {/* Large Time Display - Colorful Gradient with 3D depth */}
-      <div className="text-center p-6 rounded-2xl" style={{
-        background: 'linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
-        boxShadow: `
-          0 8px 16px rgba(0, 0, 0, 0.5),
-          0 16px 32px rgba(0, 0, 0, 0.4),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1),
-          inset 0 -1px 0 rgba(0, 0, 0, 0.5)
-        `,
-        border: '1px solid rgba(255, 255, 255, 0.05)'
-      }}>
-        <p className="text-[7rem] font-bold tracking-tight leading-none font-mono" style={{
-          background: 'linear-gradient(135deg, #3B82F6 0%, #8B5CF6 25%, #EC4899 50%, #F59E0B 75%, #10B981 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          filter: 'drop-shadow(0 8px 16px rgba(139, 92, 246, 0.5))'
-        }}>
-          {formatTime(elapsedTime)}
-        </p>
-        {remainingTime !== undefined && (
-          <p className="text-xl mt-3 font-mono" style={{
-            background: 'linear-gradient(90deg, #60A5FA 0%, #A78BFA 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            filter: 'drop-shadow(0 2px 4px rgba(96, 165, 250, 0.4))'
-          }}>
-            {t('remainingTime')}: {formatTime(remainingTime)}
-          </p>
+      {/* Player Card */}
+      <div className="bg-[#8B5CF6] rounded-3xl p-5 flex flex-col gap-3">
+        {/* BPM Display */}
+        <div className="flex flex-col items-center gap-1">
+          <div className="text-[40px] font-extrabold text-white leading-none" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            {bpm}
+          </div>
+          <div className="text-sm font-semibold text-white/70">BPM</div>
+        </div>
+
+        {/* Count Display */}
+        <div className="flex flex-col items-center gap-1">
+          <div className="text-[56px] font-extrabold text-white leading-none" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            {currentCount}
+          </div>
+          <div className="text-xs font-semibold text-white/70">Count</div>
+        </div>
+
+        {/* Play Button */}
+        <div className="flex justify-center">
+          <button
+            onClick={isPlaying ? onStop : onStart}
+            className="w-16 h-16 rounded-full bg-white flex items-center justify-center hover:scale-105 transition-transform"
+          >
+            {isPlaying ? (
+              <Pause className="w-7 h-7 text-[#8B5CF6] fill-[#8B5CF6]" />
+            ) : (
+              <Play className="w-7 h-7 text-[#8B5CF6] fill-[#8B5CF6]" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* BPM Slider */}
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-bold text-[#18181B]" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            {t('bpm')}
+          </span>
+          <span className="text-sm font-semibold text-[#8B5CF6]">{bpm}</span>
+        </div>
+        <div className="relative">
+          <div className="h-1.5 bg-[#F4F4F5] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#8B5CF6] rounded-full"
+              style={{ width: `${((bpm - MIN_BPM) / (MAX_BPM - MIN_BPM)) * 100}%` }}
+            />
+          </div>
+          <Slider
+            value={[bpm]}
+            onValueChange={(values) => onBpmChange(values[0])}
+            min={MIN_BPM}
+            max={MAX_BPM}
+            step={1}
+            className="absolute inset-0 opacity-0"
+          />
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="flex gap-3">
+        <div className="flex-1 bg-[#F4F4F5] rounded-2xl p-3 flex flex-col gap-0.5">
+          <div className="text-[20px] font-extrabold text-[#18181B] leading-none" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            {formatTime(elapsedTime)}
+          </div>
+          <div className="text-[10px] font-semibold text-[#71717A]">{t('duration')}</div>
+        </div>
+        <div className="flex-1 bg-[#F4F4F5] rounded-2xl p-3 flex flex-col gap-0.5">
+          <div className="text-[20px] font-extrabold text-[#18181B] leading-none" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            {totalBeats}
+          </div>
+          <div className="text-[10px] font-semibold text-[#71717A]">{t('count')}</div>
+        </div>
+      </div>
+
+      {/* Sound Type */}
+      <div className="flex flex-col gap-1.5">
+        <h3 className="text-sm font-bold text-[#18181B]" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+          {t('soundType')}
+        </h3>
+        <div className="flex gap-1.5">
+          {(['beep', 'tick', 'clap'] as SoundType[]).map((type) => (
+            <button
+              key={type}
+              onClick={() => updateSetting('soundType', type)}
+              className={`flex-1 rounded-2xl p-2.5 flex flex-col items-center gap-1 ${
+                settings.soundType === type ? 'bg-[#8B5CF6]' : 'bg-[#F4F4F5]'
+              }`}
+            >
+              <Volume2 className={`w-4.5 h-4.5 ${settings.soundType === type ? 'text-white' : 'text-[#71717A]'}`} />
+              <span className={`text-[11px] font-semibold ${settings.soundType === type ? 'text-white' : 'text-[#71717A]'}`}>
+                {t(`soundType_${type}`)}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Voice Count */}
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[#18181B]" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            {t('enableCount')}
+          </h3>
+          <button
+            onClick={() => updateSetting('enableCount', !settings.enableCount)}
+            className={`w-[51px] h-[31px] rounded-full p-0.5 flex items-center ${
+              settings.enableCount ? 'bg-[#8B5CF6] justify-end' : 'bg-[#E4E4E7] justify-start'
+            }`}
+          >
+            <div className="w-[27px] h-[27px] rounded-full bg-white" />
+          </button>
+        </div>
+      </div>
+
+      {/* Background Music */}
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[#18181B]" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            {t('backgroundMusic')}
+          </h3>
+          <button
+            onClick={() => updateSetting('backgroundMusicEnabled', !settings.backgroundMusicEnabled)}
+            className={`w-[51px] h-[31px] rounded-full p-0.5 flex items-center ${
+              settings.backgroundMusicEnabled ? 'bg-[#14B8A6] justify-end' : 'bg-[#E4E4E7] justify-start'
+            }`}
+          >
+            <div className="w-[27px] h-[27px] rounded-full bg-white" />
+          </button>
+        </div>
+        {settings.backgroundMusicEnabled && (
+          <div className="bg-[#F4F4F5] rounded-2xl p-3 flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-[#18181B]">{t('backgroundMusicVolume')}</span>
+              <span className="text-[11px] font-semibold text-[#14B8A6]">
+                {Math.round(settings.backgroundMusicVolume * 100)}%
+              </span>
+            </div>
+            <div className="relative">
+              <div className="h-1 bg-[#E4E4E7] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#14B8A6] rounded-full"
+                  style={{ width: `${settings.backgroundMusicVolume * 100}%` }}
+                />
+              </div>
+              <Slider
+                value={[settings.backgroundMusicVolume]}
+                onValueChange={(values) => updateSetting('backgroundMusicVolume', values[0])}
+                min={0}
+                max={1}
+                step={0.01}
+                className="absolute inset-0 opacity-0"
+              />
+            </div>
+          </div>
         )}
       </div>
 
-      {/* Control Button - Start/Stop (Dynamic Gradient with 3D) */}
-      <div className="flex justify-center items-center w-full -mt-4">
-        <button
-          onClick={() => {
-            if (isPlaying) {
-              onStop();
-            } else {
-              onStart();
-            }
-          }}
-          className="w-48 h-14 rounded-full flex items-center justify-center gap-2 transition-all duration-300 transform active:scale-95 relative overflow-hidden group"
-          style={{
-            background: isPlaying
-              ? 'linear-gradient(135deg, #EF4444 0%, #F97316 50%, #F59E0B 100%)'
-              : 'linear-gradient(135deg, #10B981 0%, #14B8A6 50%, #06B6D4 100%)',
-            boxShadow: isPlaying
-              ? `
-                0 8px 32px rgba(239, 68, 68, 0.6),
-                0 4px 16px rgba(239, 68, 68, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                inset 0 -2px 0 rgba(0, 0, 0, 0.3)
-              `
-              : `
-                0 8px 32px rgba(16, 185, 129, 0.6),
-                0 4px 16px rgba(16, 185, 129, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                inset 0 -2px 0 rgba(0, 0, 0, 0.3)
-              `,
-          }}
-        >
-          {/* Animated pulse effect */}
-          <div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{
-              background: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%)',
-            }}
-          />
-          {isPlaying ? (
-            <IoStop className="text-2xl text-white relative z-10" style={{
-              filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))'
-            }} />
-          ) : (
-            <IoPlay className="text-2xl text-white relative z-10" style={{
-              filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))'
-            }} />
-          )}
-          <span className="text-white text-base font-semibold relative z-10" style={{
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-          }}>
-            {isPlaying ? t('stop') : t('start')}
-          </span>
-        </button>
-      </div>
-
-      {/* Count Display - Colorful with 3D depth */}
-      {enableCount && (
-        <div className="w-full p-4 rounded-2xl" style={{
-          background: 'linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)',
-          boxShadow: `
-            0 4px 6px rgba(0, 0, 0, 0.4),
-            0 8px 16px rgba(0, 0, 0, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1),
-            inset 0 -1px 0 rgba(0, 0, 0, 0.5)
-          `,
-          border: '1px solid rgba(255, 255, 255, 0.05)'
-        }}>
-          <p className="text-xs uppercase tracking-wider mb-3 text-center font-semibold" style={{
-            background: 'linear-gradient(90deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            filter: 'drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3))'
-          }}>
-            {t('count')}
-          </p>
-          <div className="flex justify-center gap-2 flex-wrap">
-            {Array.from({ length: Math.min(countMax, 8) }, (_, i) => i + 1).map((num) => (
-              <div
-                key={num}
-                className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-base transition-all duration-300 ${
-                  num === currentCount ? 'scale-110' : ''
-                }`}
-                style={{
-                  background: num === currentCount
-                    ? 'linear-gradient(135deg, #10B981 0%, #14B8A6 50%, #06B6D4 100%)'
-                    : num < currentCount
-                    ? 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)'
-                    : 'linear-gradient(135deg, #374151 0%, #1F2937 100%)',
-                  color: '#FFFFFF',
-                  boxShadow: num === currentCount
-                    ? `
-                      0 4px 16px rgba(16, 185, 129, 0.5),
-                      0 2px 8px rgba(16, 185, 129, 0.4),
-                      0 0 0 1px rgba(255, 255, 255, 0.1),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                      inset 0 -1px 0 rgba(0, 0, 0, 0.3)
-                    `
-                    : `
-                      0 2px 8px rgba(0, 0, 0, 0.3),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.05),
-                      inset 0 -1px 0 rgba(0, 0, 0, 0.3)
-                    `,
-                  border: num > currentCount ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
-                  opacity: num < currentCount ? 0.5 : 1,
-                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
-                }}
-              >
-                {num}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

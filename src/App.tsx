@@ -1,20 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import './i18n';
 import { Player } from './components/Player';
-import { Settings } from './components/Settings';
-import { Button } from './components/ui/button';
 import { useAudioPlayer } from './hooks/useAudioPlayer';
 import { useBackgroundMusic } from './hooks/useBackgroundMusic';
 import { AppSettings } from './types';
-import { loadSettings, saveSettings } from './utils/storage';
+import { loadSettings, saveSettings, addExerciseLog } from './utils/storage';
 import { resetBeatNumber } from './utils/audioEngine';
 import { logger } from './utils/logger';
 import './index.css';
 
 function App() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [settings, setSettings] = useState<AppSettings>(loadSettings());
+  const sessionStartTime = useRef<number | null>(null);
 
   // Background music hook
   const bgMusic = useBackgroundMusic({
@@ -76,11 +75,30 @@ function App() {
       bgMusicEnabled: settings.backgroundMusicEnabled,
     });
 
+    // Record session start time
+    sessionStartTime.current = Date.now();
     audioPlayer.start();
   };
 
   // Handle stop
   const handleStop = () => {
+    // Save exercise log if session was active
+    if (sessionStartTime.current && audioPlayer.playerState.elapsedTime > 0) {
+      const log = {
+        id: Date.now().toString(),
+        startTime: sessionStartTime.current,
+        endTime: Date.now(),
+        duration: audioPlayer.playerState.elapsedTime,
+        bpm: settings.bpm,
+        soundType: settings.soundType,
+        enableCount: settings.enableCount,
+        countMax: settings.countMax,
+      };
+      addExerciseLog(log);
+      logger.log('Exercise log saved:', log);
+    }
+
+    sessionStartTime.current = null;
     stopAll();
   };
 
@@ -101,89 +119,22 @@ function App() {
     logger.log('=== handleBpmChange 完成');
   };
 
-  // Switch language
-  const handleLanguageChange = (lang: 'zh' | 'en') => {
-    logger.log('切换界面语言:', lang, '同时同步人声语言');
-    i18n.changeLanguage(lang);
-    // 自动同步人声语言
-    setSettings(prev => ({ ...prev, voiceLanguage: lang }));
-  };
-
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{
-        background: 'radial-gradient(circle at 50% 0%, #2C2C2E 0%, #1C1C1E 50%, #000000 100%)',
-      }}
-    >
-      {/* iPhone 16 Pro Max Frame with Titanium Effect */}
-      <div className="relative" style={{ padding: '3px' }}>
-        {/* Titanium Bezel with Gradient */}
-        <div
-          className="relative overflow-hidden"
-          style={{
-            width: '430px',
-            height: '932px',
-            maxWidth: '100vw',
-            maxHeight: '100vh',
-            borderRadius: '55px',
-            background: 'linear-gradient(135deg, #4A4A4C 0%, #2C2C2E 25%, #1C1C1E 50%, #2C2C2E 75%, #4A4A4C 100%)',
-            padding: '2px',
-            boxShadow: `
-              0 0 0 1px rgba(255, 255, 255, 0.1),
-              0 2px 4px rgba(0, 0, 0, 0.3),
-              0 8px 16px rgba(0, 0, 0, 0.4),
-              0 16px 32px rgba(0, 0, 0, 0.5),
-              inset 0 1px 0 rgba(255, 255, 255, 0.15),
-              inset 0 -1px 0 rgba(0, 0, 0, 0.5)
-            `,
-          }}
-        >
-          {/* Screen with slight inset shadow */}
-          <div
-            className="relative bg-[var(--background-color)] overflow-hidden h-full"
-            style={{
-              borderRadius: '53px',
-              boxShadow: 'inset 0 0 0 1px rgba(0, 0, 0, 0.3), inset 0 2px 8px rgba(0, 0, 0, 0.4)',
-            }}
-          >
-            {/* Dynamic Island */}
-            <div className="absolute top-[20px] left-1/2 -translate-x-1/2 z-50">
-              <div
-                style={{
-                  width: '126px',
-                  height: '37px',
-                  borderRadius: '19px',
-                  background: '#000000',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.05)',
-                }}
-              />
-            </div>
-
-            {/* Status Bar Spacer */}
-            <div className="h-[59px] bg-[var(--background-color)]" />
-
-        {/* Header - Minimal */}
-        <header className="border-b border-[var(--separator-color)] bg-[var(--surface-color)]">
-          <div className="px-4 py-4">
-            <div className="flex justify-center items-center relative">
-              <h1 className="text-xl font-bold text-[var(--text-primary)]">
-                {t('appTitle')}
-              </h1>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => handleLanguageChange(i18n.language === 'zh' ? 'en' : 'zh')}
-                className="!font-semibold absolute right-0"
-              >
-                {i18n.language === 'zh' ? 'EN' : '中文'}
-              </Button>
-            </div>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F8F8F8' }}>
+      {/* Mobile Screen Container */}
+      <div className="relative w-full max-w-[402px] h-[874px] bg-white overflow-hidden flex flex-col">
+        {/* Status Bar */}
+        <div className="flex items-center justify-between px-6 py-5 h-[62px]">
+          <span className="text-[17px] font-semibold text-black">9:41</span>
+          <div className="flex items-center gap-1.5">
+            <div className="w-[18px] h-[18px]" />
+            <div className="w-[18px] h-[18px]" />
+            <div className="w-[24px] h-[18px]" />
           </div>
-        </header>
+        </div>
 
-        {/* Main Content - Single Column Centered */}
-        <main className="px-4">
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto">
           <Player
             bpm={audioPlayer.playerState.currentBPM}
             isPlaying={audioPlayer.playerState.isPlaying}
@@ -195,31 +146,9 @@ function App() {
             onStart={handleStart}
             onStop={handleStop}
             onBpmChange={handleBpmChange}
+            settings={settings}
+            onSettingsChange={setSettings}
           />
-        </main>
-
-            {/* Settings - Bottom Drawer/Collapsible */}
-            <div className="absolute bottom-0 left-0 right-0 border-t border-[var(--separator-color)] bg-[var(--surface-color)] max-h-[40vh] overflow-y-auto pb-[34px]">
-              <div className="px-4 py-4">
-                <Settings
-                  settings={settings}
-                  onChange={setSettings}
-                />
-              </div>
-            </div>
-
-            {/* Home Indicator */}
-            <div className="absolute bottom-[8px] left-1/2 -translate-x-1/2">
-              <div
-                style={{
-                  width: '134px',
-                  height: '5px',
-                  borderRadius: '100px',
-                  background: 'rgba(255, 255, 255, 0.3)',
-                }}
-              />
-            </div>
-          </div>
         </div>
       </div>
     </div>
